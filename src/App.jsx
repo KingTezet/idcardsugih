@@ -7,25 +7,23 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 
 extend({ MeshLineGeometry, MeshLineMaterial })
 
+// Tambahkan console.log untuk memeriksa path
+const gltfPath = `${process.env.PUBLIC_URL}/assets/idcard.glb`;
+const texturePath = `${process.env.PUBLIC_URL}/assets/lanyard.png`;
+
+console.log("GLTF Path:", gltfPath);
+console.log("Texture Path:", texturePath);
+
+useGLTF.preload(gltfPath)
+useTexture.preload(texturePath)
+
 export default function App() {
-  // Definisikan path untuk GLTF dan Texture di dalam komponen
-  const gltfPath = process.env.PUBLIC_URL + '/assets/idcard.glb';
-  const texturePath = process.env.PUBLIC_URL + '/assets/lanyard.png';
-
-  // Tambahkan console.log untuk memeriksa path
-  console.log("GLTF Path:", gltfPath);
-  console.log("Texture Path:", texturePath);
-  console.log("PUBLIC_URL:", process.env.PUBLIC_URL);
-
-  // Preload assets
-  useGLTF.preload(gltfPath);
-  useTexture.preload(texturePath);
-
+  // const { debug } = useControls({ debug: false })
   return (
     <Canvas camera={{ position: [0, 0, 13], fov: 25 }}>
       <ambientLight intensity={Math.PI} />
       <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
-        <Band gltfPath={gltfPath} texturePath={texturePath} />
+        <Band />
       </Physics>
       <Environment background blur={0.75}>
         <color attach="background" args={['grey']} />
@@ -38,7 +36,7 @@ export default function App() {
   )
 }
 
-function Band({ gltfPath, texturePath, maxSpeed = 50, minSpeed = 10 }) {
+function Band({ maxSpeed = 50, minSpeed = 10 }) {
   const band = useRef(), fixed = useRef(), j1 = useRef(), j2 = useRef(), j3 = useRef(), card = useRef() // prettier-ignore
   const vec = new THREE.Vector3(), ang = new THREE.Vector3(), rot = new THREE.Vector3(), dir = new THREE.Vector3() // prettier-ignore
   const segmentProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 2, linearDamping: 2 }
