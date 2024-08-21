@@ -8,11 +8,13 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 extend({ MeshLineGeometry, MeshLineMaterial })
 
 // Tambahkan console.log untuk memeriksa path
-const gltfPath = `${process.env.PUBLIC_URL}/assets/idcard.glb`;
-const texturePath = `${process.env.PUBLIC_URL}/assets/lanyard.png`;
+const gltfPath = '/assets/idcard.glb';
+const texturePath = '/assets/lanyard.png';
 
 console.log("GLTF Path:", gltfPath);
 console.log("Texture Path:", texturePath);
+console.log("PUBLIC_URL:", process.env.PUBLIC_URL);
+
 
 useGLTF.preload(gltfPath)
 useTexture.preload(texturePath)
