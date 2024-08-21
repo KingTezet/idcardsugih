@@ -14,7 +14,7 @@ const texture = useTexture('/assets/lanyard.png')
 
 console.log("GLTF Path:", gltfPath);
 console.log("Texture Path:", texturePath);
-
+console.log("PUBLIC_URL:", process.env.PUBLIC_URL);
 
 
 useGLTF.preload(gltfPath)
