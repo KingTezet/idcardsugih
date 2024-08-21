@@ -10,18 +10,6 @@ extend({ MeshLineGeometry, MeshLineMaterial })
 // Tambahkan console.log untuk memeriksa path
 const { nodes, materials } = useGLTF('/assets/idcard.glb')
 const texture = useTexture('/assets/lanyard.png')
-const myPromise = new Promise((resolve, reject) => {
-       // Some asynchronous operation
-       setTimeout(() => {
-           // This line doesn't return anything
-           console.log("Operation completed"); 
-           resolve(); // Resolves to undefined
-       }, 1000);
-   });
-
-   myPromise.then(result => {
-       console.log(result); // Will print 'undefined'
-   });
 
 
 console.log("GLTF Path:", gltfPath);
