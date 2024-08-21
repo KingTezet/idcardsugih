@@ -10,8 +10,8 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 // import { useControls } from 'leva'
 
 extend({ MeshLineGeometry, MeshLineMaterial })
-useGLTF.preload('assets/idcard.glb')
-useTexture.preload('assets/lanyard.png')
+useGLTF('/assets/idcard.glb')
+useTexture('/assets/lanyard.png')
 
 export default function App() {
   // const { debug } = useControls({ debug: false })
