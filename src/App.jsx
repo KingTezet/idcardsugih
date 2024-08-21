@@ -7,23 +7,6 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 
 extend({ MeshLineGeometry, MeshLineMaterial })
 
-// Tambahkan useEffect untuk preload assets dengan async
-useEffect(() => {
-  async function preloadAssets() {
-    try {
-      // Preload GLTF dan Texture
-      await useGLTF.preload('/assets/idcard.glb');
-      await useTexture.preload('/assets/lanyard.png');
-      
-      console.log("Assets loaded successfully");
-    } catch (error) {
-      console.error("Failed to preload assets", error);
-    }
-  }
-
-  preloadAssets();
-}, []);
-
 export default function App() {
   return (
     <Canvas camera={{ position: [0, 0, 13], fov: 25 }}>
@@ -46,8 +29,20 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
   const band = useRef(), fixed = useRef(), j1 = useRef(), j2 = useRef(), j3 = useRef(), card = useRef()
   const vec = new THREE.Vector3(), ang = new THREE.Vector3(), rot = new THREE.Vector3(), dir = new THREE.Vector3()
   const segmentProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 2, linearDamping: 2 }
-  const { nodes, materials } = useGLTF('/assets/idcard.glb')
-  const texture = useTexture('/assets/lanyard.png')
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  let nodes, materials, texture;
+
+  try {
+    ({ nodes, materials } = useGLTF('/assets/idcard.glb'));
+    texture = useTexture('/assets/lanyard.png');
+    setLoading(false);
+  } catch (e) {
+    setError(e.message);
+  }
+
   const { width, height } = useThree((state) => state.size)
   const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]))
   const [dragged, drag] = useState(false)
@@ -66,6 +61,8 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
   }, [hovered, dragged])
 
   useFrame((state, delta) => {
+    if (loading || error) return;
+
     if (dragged) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera)
       dir.copy(vec).sub(state.camera.position).normalize()
@@ -89,6 +86,9 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z })
     }
   })
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   curve.curveType = 'chordal'
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
